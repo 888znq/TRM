@@ -1266,29 +1266,31 @@
 
                 
 
-                            // --- DRAW X-AXIS (TIME) VERTICAL GRID LINES ---
-
-                            ctx.strokeStyle = '#ffffff';
-
-                            ctx.lineWidth = 0.2;
-
-                            for (let i = 0; i < visibleCandles.length; i++) {
-
-                                if (i % 12 === 0 || i === visibleCandles.length - 1) {
-
-                                    const xLine = chartAreaWidth - ((visibleCandles.length - i) * totalCandleWidth) + (candleWidth / 2);
-
-                                    ctx.beginPath();
-
-                                    ctx.moveTo(xLine, 0);
-
-                                    ctx.lineTo(xLine, chartHeight);
-
-                                    ctx.stroke();
-
-                                }
-
-                            }
+                            // --- DRAW X-AXIS (TIME) VERTICAL GRID LINES (full width, even spacing) ---
+                            
+                                                        ctx.strokeStyle = '#ffffff';
+                            
+                                                        ctx.lineWidth = 0.2;
+                            
+                                                        const vGridStep = totalCandleWidth * 12;
+                            
+                                                        const vGridRightEdge = canvasWidth - yAxisWidth;
+                            
+                                                        let vGridX = chartAreaWidth % vGridStep;
+                            
+                                                        while (vGridX <= vGridRightEdge) {
+                            
+                                                            ctx.beginPath();
+                            
+                                                            ctx.moveTo(vGridX, 0);
+                            
+                                                            ctx.lineTo(vGridX, chartHeight);
+                            
+                                                            ctx.stroke();
+                            
+                                                            vGridX += vGridStep;
+                            
+                                                        }
 
                 
 
