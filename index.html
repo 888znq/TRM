@@ -1102,6 +1102,13 @@
 
 
         window.addEventListener('resize', resizeCanvas);
+        
+                if (window.ResizeObserver) {
+                    const _canvasWrapperEl = document.getElementById('canvas-wrapper');
+                    if (_canvasWrapperEl) {
+                        new ResizeObserver(function() { resizeCanvas(); }).observe(_canvasWrapperEl);
+                    }
+                }
 
 
 
