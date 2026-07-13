@@ -183,28 +183,28 @@
         /* --- Bottom Controls --- */
 
                 .bottom-controls {
-
-                    display: flex !important;
-
-                    flex-wrap: wrap;
-
-                    align-items: center;
-
-                    justify-content: center;
-
-                    gap: 12px;
-
-                    padding: 10px 5px;
-
-                    background: #000432;
-
-                    border-top: 1px solid #333;
-
-                    box-sizing: border-box;
-
-                    width: 100%;
-
-                }
+                
+                                    display: flex !important;
+                
+                                    flex-wrap: wrap;
+                
+                                    align-items: center;
+                
+                                    justify-content: center;
+                
+                                    gap: 12px;
+                
+                                    padding: 2px 5px;
+                
+                                    background: #000432;
+                
+                                    border-top: 1px solid #333;
+                
+                                    box-sizing: border-box;
+                
+                                    width: 100%;
+                
+                                }
 
                 .bottom-controls::-webkit-scrollbar {
 
@@ -766,7 +766,7 @@
 
                     </div>
 
-                    <div class="bottom-controls" style="display: flex !important; justify-content: center; align-items: center; padding: 10px; background: #000432; width: 100%; box-sizing: border-box; border-top: 1px solid #ffffff;">
+                    <div class="bottom-controls" style="display: flex !important; justify-content: center; align-items: center; padding: 2px 10px; background: #000432; width: 100%; box-sizing: border-box; border-top: 1px solid #ffffff;">
 
                                 <div class="segmented-bar" style="display: flex; align-items: stretch; border: 1px solid #ffffff; border-radius: 3px; overflow: hidden; height: 36px;">
 
@@ -1192,15 +1192,15 @@
 
 
 
-            // Add padding top and bottom (10%)
-
-            const priceRange = maxPrice - minPrice || 1;
-
-            const paddedMin = minPrice - (priceRange * 0.1);
-
-            const paddedMax = maxPrice + (priceRange * 0.1);
-
-            const paddedRange = paddedMax - paddedMin;
+            // Add padding top and bottom (2%)
+            
+                        const priceRange = maxPrice - minPrice || 1;
+            
+                        const paddedMin = minPrice - (priceRange * 0.02);
+            
+                        const paddedMax = maxPrice + (priceRange * 0.02);
+            
+                        const paddedRange = paddedMax - paddedMin;
 
 
 
@@ -1293,22 +1293,30 @@
                 
 
                             // Draw Base axes lines to separate chart from labels
-
-                            ctx.strokeStyle = '#ffffff';
-
-                            ctx.lineWidth = 1;
-
-            ctx.beginPath();
-
-            ctx.moveTo(0, chartHeight);
-
-            ctx.lineTo(canvasWidth, chartHeight); // Full Bottom line
-
-            ctx.moveTo(canvasWidth - yAxisWidth, 0);
-
-            ctx.lineTo(canvasWidth - yAxisWidth, chartHeight); // Far Right Axis line
-
-            ctx.stroke();
+                            
+                                                        ctx.strokeStyle = '#ffffff';
+                            
+                                                        ctx.lineWidth = 1;
+                            
+                                        ctx.beginPath();
+                            
+                                        ctx.moveTo(0, chartHeight);
+                            
+                                        ctx.lineTo(canvasWidth, chartHeight); // Full Bottom line
+                            
+                                        ctx.moveTo(canvasWidth - yAxisWidth, 0);
+                            
+                                        ctx.lineTo(canvasWidth - yAxisWidth, chartHeight); // Far Right Axis line
+                            
+                                        ctx.moveTo(0, 0);
+                            
+                                        ctx.lineTo(canvasWidth, 0); // Top line
+                            
+                                        ctx.moveTo(0, 0);
+                            
+                                        ctx.lineTo(0, chartHeight); // Left Axis line
+                            
+                                        ctx.stroke();
 
 
 
