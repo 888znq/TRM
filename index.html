@@ -814,7 +814,6 @@
                                                                                                 
                                                                                                                                                     <button class="quick-pair-btn" data-val="1HZ100V" style="border: none; border-right: 1px solid #ffffff !important; border-radius: 0; background: transparent; color: #c8d0e7; padding: 0 12px; margin: 0; height: 100%; font-size: 12px; font-weight: bold;">V100 <span class="payout-pct" id="payout-1HZ100V" style="color: inherit; margin-left: 2px;">--%</span></button>
                                                                                                                                                     <input type="number" id="candle-time" value="3" step="1" aria-label="Timeframe (seconds)" style="width: 45px; height: 100%; background: transparent; border: none; color: #c8d0e7; text-align: center; font-weight: 800; font-size: 12px; outline: none; margin: 0; padding: 0 6px; box-sizing: border-box;">
-                                                                                                                                                                                                                                                        <button id="tick-mode-btn" type="button" title="Tick Chart Mode" style="border: none; border-left: 1px solid #ffffff !important; border-radius: 0; background: transparent; color: #c8d0e7; padding: 0 10px; margin: 0; height: 100%; font-size: 12px; font-weight: bold; cursor: pointer;">Tick</button>
                                                                                                 
                                                                                                                                                 </div>
 
@@ -903,10 +902,6 @@
         let zoomLevel = 100;
 
         let marketData = {};
-        
-                let tickChartMode = false;
-        
-                let tickSeries = {};
 
 
 
@@ -1118,20 +1113,12 @@
 
 
         function drawChart() {
-        
-                    if (!ctx) return;
-        
-                    if (tickChartMode) {
-        
-                        drawTickChart();
-        
-                        return;
-        
-                    }
-        
-                    // Clear the canvas
-        
-                    ctx.clearRect(0, 0, canvasWidth, canvasHeight);
+
+            if (!ctx) return;
+
+            // Clear the canvas
+
+            ctx.clearRect(0, 0, canvasWidth, canvasHeight);
 
 
 
@@ -1674,264 +1661,16 @@
             // Countdown Timer Text
 
             ctx.font = '10px monospace';
-            
-                        ctx.fillText(timerText, canvasWidth - (yAxisWidth / 2) + 2, labelY + 18);
-            
-                    }
-            
-            
-            
-                    function drawTickChart() {
-            
-                        if (!ctx) return;
-            
-                        ctx.clearRect(0, 0, canvasWidth, canvasHeight);
-            
-                        const ticks = tickSeries[currentPair] || [];
-            
-                        if (ticks.length === 0) {
-            
-                            loadingText.style.display = 'block';
-            
-                            return;
-            
-                        } else {
-            
-                            loadingText.style.display = 'none';
-            
-                        }
-            
-                        const yAxisWidth = 48;
-            
-                        const xAxisHeight = 25;
-            
-                        const chartAreaWidth = canvasWidth * 0.50;
-            
-                        const chartHeight = canvasHeight - xAxisHeight;
-            
-                        const nodeSpacing = 10;
-            
-                        const maxVisibleTicks = Math.floor(chartAreaWidth / nodeSpacing);
-            
-                        const visibleTicks = ticks.slice(-maxVisibleTicks);
-            
-                        let minPrice = Infinity;
-            
-                        let maxPrice = -Infinity;
-            
-                        visibleTicks.forEach(t => {
-            
-                            if (t.price < minPrice) minPrice = t.price;
-            
-                            if (t.price > maxPrice) maxPrice = t.price;
-            
-                        });
-            
-                        const priceRange = maxPrice - minPrice || 1;
-            
-                        const paddedMin = minPrice - (priceRange * 0.05);
-            
-                        const paddedMax = maxPrice + (priceRange * 0.05);
-            
-                        const paddedRange = paddedMax - paddedMin;
-            
-                        function getY(price) {
-            
-                            return chartHeight - ((price - paddedMin) / paddedRange) * chartHeight;
-            
-                        }
-            
-                        const dec = paddedMax < 10 ? 5 : (paddedMax < 1000 ? 3 : 2);
-            
-                        ctx.fillStyle = '#888';
-            
-                        ctx.font = '11px sans-serif';
-            
-                        ctx.textAlign = 'left';
-            
-                        ctx.textBaseline = 'middle';
-            
-                        ctx.lineWidth = 1;
-            
-                        for (let i = 1; i < 6; i++) {
-            
-                            let yLine = (chartHeight / 6) * i;
-            
-                            ctx.strokeStyle = '#ffffff';
-            
-                            ctx.lineWidth = 0.2;
-            
-                            ctx.beginPath();
-            
-                            ctx.moveTo(0, yLine);
-            
-                            ctx.lineTo(canvasWidth - yAxisWidth, yLine);
-            
-                            ctx.stroke();
-            
-                            let priceAtLine = paddedMax - (paddedRange * (i / 6));
-            
-                            ctx.fillText(priceAtLine.toFixed(dec), canvasWidth - yAxisWidth + 6, yLine);
-            
-                        }
-            
-                        ctx.strokeStyle = '#ffffff';
-            
-                        ctx.lineWidth = 1;
-            
-                        ctx.beginPath();
-            
-                        ctx.moveTo(0, chartHeight);
-            
-                        ctx.lineTo(canvasWidth, chartHeight);
-            
-                        ctx.moveTo(canvasWidth - yAxisWidth, 0);
-            
-                        ctx.lineTo(canvasWidth - yAxisWidth, chartHeight);
-            
-                        ctx.moveTo(0, 0);
-            
-                        ctx.lineTo(canvasWidth, 0);
-            
-                        ctx.moveTo(0, 0);
-            
-                        ctx.lineTo(0, chartHeight);
-            
-                        ctx.stroke();
-            
-                        const nodePositions = [];
-            
-                        for (let i = 0; i < visibleTicks.length; i++) {
-            
-                            const t = visibleTicks[i];
-            
-                            const x = chartAreaWidth - ((visibleTicks.length - i) * nodeSpacing);
-            
-                            const y = getY(t.price);
-            
-                            nodePositions.push({ x: x, y: y, time: t.time });
-            
-                        }
-            
-                        ctx.strokeStyle = '#00e5ff';
-            
-                        ctx.lineWidth = 1.5;
-            
-                        ctx.lineJoin = 'round';
-            
-                        ctx.beginPath();
-            
-                        nodePositions.forEach((p, i) => {
-            
-                            if (i === 0) ctx.moveTo(p.x, p.y);
-            
-                            else ctx.lineTo(p.x, p.y);
-            
-                        });
-            
-                        ctx.stroke();
-            
-                        nodePositions.forEach(p => {
-            
-                            ctx.fillStyle = '#00e5ff';
-            
-                            ctx.beginPath();
-            
-                            ctx.arc(p.x, p.y, 3, 0, Math.PI * 2);
-            
-                            ctx.fill();
-            
-                            ctx.strokeStyle = '#000432';
-            
-                            ctx.lineWidth = 1;
-            
-                            ctx.stroke();
-            
-                        });
-            
-                        ctx.textAlign = 'center';
-            
-                        ctx.textBaseline = 'top';
-            
-                        for (let i = 0; i < nodePositions.length; i++) {
-            
-                            if (i % 12 === 0 || i === nodePositions.length - 1) {
-            
-                                const date = new Date(nodePositions[i].time * 1000);
-            
-                                const hours = date.getHours().toString().padStart(2, '0');
-            
-                                const mins = date.getMinutes().toString().padStart(2, '0');
-            
-                                const secs = date.getSeconds().toString().padStart(2, '0');
-            
-                                ctx.fillStyle = '#888';
-            
-                                ctx.fillText(`${hours}:${mins}:${secs}`, nodePositions[i].x, chartHeight + 6);
-            
-                            }
-            
-                        }
-            
-                        const lastTick = visibleTicks[visibleTicks.length - 1];
-            
-                        const currentPrice = lastTick.price;
-            
-                        const currentY = getY(currentPrice);
-            
-                        const prevPrice = visibleTicks.length > 1 ? visibleTicks[visibleTicks.length - 2].price : currentPrice;
-            
-                        const isUp = currentPrice >= prevPrice;
-            
-                        const boxColor = isUp ? '#0ecb81' : '#f6465d';
-            
-                        ctx.strokeStyle = boxColor;
-            
-                        ctx.setLineDash([2, 4]);
-            
-                        ctx.beginPath();
-            
-                        ctx.moveTo(0, currentY);
-            
-                        ctx.lineTo(canvasWidth - yAxisWidth, currentY);
-            
-                        ctx.stroke();
-            
-                        ctx.setLineDash([]);
-            
-                        const labelHeight = 24;
-            
-                        const labelY = currentY - labelHeight / 2;
-            
-                        ctx.fillStyle = boxColor;
-            
-                        ctx.fillRect(canvasWidth - yAxisWidth, labelY, yAxisWidth, labelHeight);
-            
-                        ctx.beginPath();
-            
-                        ctx.moveTo(canvasWidth - yAxisWidth, currentY);
-            
-                        ctx.lineTo(canvasWidth - yAxisWidth + 5, currentY - 5);
-            
-                        ctx.lineTo(canvasWidth - yAxisWidth + 5, currentY + 5);
-            
-                        ctx.fill();
-            
-                        ctx.fillStyle = '#ffffff';
-            
-                        ctx.textAlign = 'center';
-            
-                        ctx.font = 'bold 11px sans-serif';
-            
-                        ctx.textBaseline = 'middle';
-            
-                        ctx.fillText(currentPrice.toFixed(dec), canvasWidth - (yAxisWidth / 2) + 2, currentY);
-            
-                    }
-            
-            
-            
-                    // --- WEBSOCKET ENGINE (NEW API: REST handshake -> OTP -> WS URL) ---
+
+            ctx.fillText(timerText, canvasWidth - (yAxisWidth / 2) + 2, labelY + 18);
+
+        }
+
+
+
+
+
+        // --- WEBSOCKET ENGINE (NEW API: REST handshake -> OTP -> WS URL) ---
 
         async function connect() {
 
@@ -2482,22 +2221,14 @@
 
 
             marketData[symbol] = Array.from(candleMap.values()).sort((a, b) => a.time - b.time);
-            
-                        tickSeries[symbol] = times.map((t, i) => ({ time: t, price: prices[i] })).slice(-2500);
 
         }
 
 
 
         function processLiveTick(symbol, epoch, price) {
-        
-                    if (!tickSeries[symbol]) tickSeries[symbol] = [];
-        
-                    tickSeries[symbol].push({ time: epoch, price: price });
-        
-                    if (tickSeries[symbol].length > 2500) tickSeries[symbol].shift();
-        
-                    if (symbol === currentPair) {
+
+            if (symbol === currentPair) {
 
                 serverTimeOffset = epoch - Math.floor(Date.now() / 1000);
 
@@ -2622,30 +2353,12 @@
 
 
         document.getElementById('trade-btn').addEventListener('click', () => executeTrade("CALL"));
-        
-                        document.getElementById('trade-btn-put').addEventListener('click', () => executeTrade("PUT"));
-        
-                        document.getElementById('trade-btn-row2').addEventListener('click', () => executeTrade("CALL"));
-        
-                        document.getElementById('trade-btn-put-row2').addEventListener('click', () => executeTrade("PUT"));
-        
-                        const tickModeBtn = document.getElementById('tick-mode-btn');
-        
-                        if (tickModeBtn) {
-        
-                            tickModeBtn.addEventListener('click', () => {
-        
-                                tickChartMode = !tickChartMode;
-        
-                                tickModeBtn.style.color = tickChartMode ? '#00e5ff' : '#c8d0e7';
-        
-                                tickModeBtn.style.background = tickChartMode ? 'rgba(0,229,255,0.15)' : 'transparent';
-        
-                                drawChart();
-        
-                            });
-        
-                        }
+
+                document.getElementById('trade-btn-put').addEventListener('click', () => executeTrade("PUT"));
+
+                document.getElementById('trade-btn-row2').addEventListener('click', () => executeTrade("CALL"));
+
+                document.getElementById('trade-btn-put-row2').addEventListener('click', () => executeTrade("PUT"));
 
 
 
