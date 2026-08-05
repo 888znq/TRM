@@ -2370,13 +2370,12 @@
                 showOnlyPair(currentPair);
                 
                         window.addEventListener('message', (event) => {
-                                                                            const raw = event.data?.trinityOS_pair;
-                                                                            if (!raw || typeof raw !== 'string') return;
-                                                                            console.log("📺 TRM Live TV Received Signal:", raw);
-                                                                            const pair = resolveTrackedPair(raw);
-                                                                            if (!pair) return;
-                                                                            receiveTrinityPair(pair);
-                                                                        });
+                                                    const raw = event.data?.trinityOS_pair;
+                                                    if (!raw || typeof raw !== 'string') return;
+                                                    const pair = resolveTrackedPair(raw);
+                                                    if (!pair) return;
+                                                    receiveTrinityPair(pair);
+                                                });
                         
                                                 function resolveTrackedPair(raw) {
                                                     if (trackedPairs.includes(raw)) return raw;
