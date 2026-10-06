@@ -2445,6 +2445,18 @@
                                                                             receiveTrinityPair(pair);
                                                                         });
                         
+                                                window.addEventListener('message', (event) => {
+                                                    const d = event.data;
+                                                    if (!d || d.type !== 'sv-select') return;
+                                                    const exp = parseInt(d.cycle, 10);
+                                                    if (exp > 0) {
+                                                        const expEl = document.getElementById('trade-expiry');
+                                                        if (expEl) expEl.value = exp;
+                                                    }
+                                                    const pair = resolveTrackedPair(String(d.pair || ''));
+                                                    if (pair) receiveTrinityPair(pair);
+                                                });
+                                                
                                                 function resolveTrackedPair(raw) {
                                                     if (trackedPairs.includes(raw)) return raw;
                                                     var match = trackedPairs.find(function(p) {
