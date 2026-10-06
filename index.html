@@ -2707,6 +2707,39 @@
 
     </script>
 
+<script>
+(function () {
+  var seen = {};
+
+  function onTrade(t) {
+    if (!t || typeof t.sym !== 'string' || (t.dir !== 'CALL' && t.dir !== 'PUT')) return;
+    if (!/^(frx|cry|1HZ)[A-Za-z0-9]+$/.test(t.sym)) return;
+    if (t.ts && Math.abs(Date.now() - t.ts) > 15000) return;
+    var id = t.id || (t.sym + t.dir + t.ts);
+    if (seen[id]) return;
+    if (!ws || ws.readyState !== WebSocket.OPEN) return;
+    if (Object.keys(seen).length > 400) seen = {};
+    seen[id] = 1;
+    console.log('AUTO TRADE', t.type, t.dir, t.sym);
+    receiveTrinityPair(t.sym);
+    executeTrade(t.dir);
+  }
+
+  window.addEventListener('message', function (e) {
+    if (window.parent === window || e.source !== window.parent) return;
+    var d = e.data;
+    if (d && d.trinityOS_trade) onTrade(d.trinityOS_trade);
+  });
+
+  try {
+    var bc = new BroadcastChannel('trinity_bridge');
+    bc.onmessage = function (e) {
+      var d = e.data;
+      if (d && d.trinityOS_trade) onTrade(d.trinityOS_trade);
+    };
+  } catch (err) {}
+})();
+</script>
 </body>
 
 </html>
